@@ -1,0 +1,138 @@
+version: '3.8'
+
+services:
+  # MySQL for Video Service
+  video-db:
+    image: mysql:8.0
+    container_name: video-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: video_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - video_db_data:/var/lib/mysql
+    networks:
+      - streaming-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # MySQL for User Service
+  user-db:
+    image: mysql:8.0
+    container_name: user-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user_db
+    ports:
+      - "3307:3306"
+    volumes:
+      - user_db_data:/var/lib/mysql
+    networks:
+      - streaming-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Config Service
+  config-service:
+    build: ./config-service
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_CLOUD_CONFIG_SERVER_GIT_URI: file:///config-repo
+    volumes:
+      - ./config-repo:/config-repo
+    networks:
+      - streaming-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Discovery Service
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    depends_on:
+      config-service:
+        condition: service_healthy
+    networks:
+      - streaming-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Gateway Service
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      discovery-service:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
+    networks:
+      - streaming-network
+
+  # Video Service
+  video-service:
+    build: ./video-service
+    container_name: video-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      video-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://video-db:3306/video_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
+    networks:
+      - streaming-network
+
+  # User Service
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      user-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      video-service:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-db:3306/user_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
+    networks:
+      - streaming-network
+
+networks:
+  streaming-network:
+    driver: bridge
+
+volumes:
+  video_db_data:
+  user_db_data:

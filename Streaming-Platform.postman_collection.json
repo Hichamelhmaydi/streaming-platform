@@ -1,0 +1,247 @@
+{
+  "info": {
+    "name": "Streaming Platform API",
+    "description": "Complete API collection for the Streaming Platform microservices",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "video_id",
+      "value": "1"
+    },
+    {
+      "key": "user_id",
+      "value": "1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Video Service",
+      "item": [
+        {
+          "name": "Create Video",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/videos",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Inception\",\n  \"description\": \"A thief who steals corporate secrets through dream-sharing technology\",\n  \"thumbnailUrl\": \"https://example.com/inception.jpg\",\n  \"trailerUrl\": \"https://www.youtube.com/embed/YoHD9XEInc0\",\n  \"duration\": 148,\n  \"releaseYear\": 2010,\n  \"type\": \"FILM\",\n  \"category\": \"SCIENCE_FICTION\",\n  \"rating\": 8.8,\n  \"director\": \"Christopher Nolan\",\n  \"cast\": \"Leonardo DiCaprio, Joseph Gordon-Levitt\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Videos",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/videos"
+          }
+        },
+        {
+          "name": "Get Video by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/videos/{{video_id}}"
+          }
+        },
+        {
+          "name": "Update Video",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/videos/{{video_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Inception Updated\",\n  \"description\": \"Updated description\",\n  \"duration\": 150,\n  \"releaseYear\": 2010,\n  \"type\": \"FILM\",\n  \"category\": \"THRILLER\",\n  \"rating\": 9.0,\n  \"director\": \"Christopher Nolan\",\n  \"cast\": \"Leonardo DiCaprio\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Video",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/videos/{{video_id}}"
+          }
+        },
+        {
+          "name": "Get Videos by Type (FILM)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/videos/type/FILM"
+          }
+        },
+        {
+          "name": "Get Videos by Category (ACTION)",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/videos/category/ACTION"
+          }
+        },
+        {
+          "name": "Search Videos by Title",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/videos/search?title=inception"
+          }
+        },
+        {
+          "name": "Filter Videos by Type and Category",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/videos/filter?type=FILM&category=SCIENCE_FICTION"
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Service",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/users",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"johndoe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/users"
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/users/{{user_id}}"
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/users/{{user_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"johndoe_updated\",\n  \"email\": \"john.updated@example.com\",\n  \"password\": \"newpassword123\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/users/{{user_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Watchlist",
+      "item": [
+        {
+          "name": "Add to Watchlist",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/watchlist/users/{{user_id}}/videos/{{video_id}}"
+          }
+        },
+        {
+          "name": "Get User Watchlist",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/watchlist/users/{{user_id}}"
+          }
+        },
+        {
+          "name": "Check if Video in Watchlist",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/watchlist/users/{{user_id}}/videos/{{video_id}}/check"
+          }
+        },
+        {
+          "name": "Remove from Watchlist",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/watchlist/users/{{user_id}}/videos/{{video_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Watch History",
+      "item": [
+        {
+          "name": "Record Watch Progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/history/users/{{user_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"videoId\": 1,\n  \"progressTime\": 3600,\n  \"completed\": false\n}"
+            }
+          }
+        },
+        {
+          "name": "Get Watch History",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/history/users/{{user_id}}"
+          }
+        },
+        {
+          "name": "Get Watch Statistics",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/history/users/{{user_id}}/statistics"
+          }
+        },
+        {
+          "name": "Clear Watch History",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/history/users/{{user_id}}"
+          }
+        }
+      ]
+    }
+  ]
+}
