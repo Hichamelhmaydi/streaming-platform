@@ -1,0 +1,85 @@
+package com.streaming.user.service;
+
+import com.streaming.user.dto.UserRequest;
+import com.streaming.user.dto.UserResponse;
+import com.streaming.user.entity.User;
+import com.streaming.user.exception.UserAlreadyExistsException;
+import com.streaming.user.exception.UserNotFoundException;
+import com.streaming.user.mapper.UserMapper;
+import com.streaming.user.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+@Transactional
+public class UserServiceImpl implements UserService {
+
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
+
+    @Override
+    public UserResponse createUser(UserRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException("Username already taken: " + request.getUsername());
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("Email already registered: " + request.getEmail());
+        }
+        User user = userMapper.toEntity(request);
+        User saved = userRepository.save(user);
+        log.info("Created user with id: {}", saved.getId());
+        return userMapper.toResponse(saved);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserResponse getUserById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+        return userMapper.toResponse(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(userMapper::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponse updateUser(Long id, UserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
+        if (!user.getUsername().equals(request.getUsername()) &&
+                userRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException("Username already taken: " + request.getUsername());
+        }
+        if (!user.getEmail().equals(request.getEmail()) &&
+                userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("Email already registered: " + request.getEmail());
+        }
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException(id);
+        }
+        userRepository.deleteById(id);
+        log.info("Deleted user with id: {}", id);
+    }
+}
