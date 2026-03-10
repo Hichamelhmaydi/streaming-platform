@@ -7,20 +7,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class WatchHistoryMapper {
 
-    public WatchHistoryResponse toResponse(WatchHistory history) {
+    public WatchHistoryResponse toResponse(WatchHistory entity) {
         return WatchHistoryResponse.builder()
-                .id(history.getId())
-                .userId(history.getUser().getId())
-                .videoId(history.getVideoId())
-                .watchedAt(history.getWatchedAt())
-                .progressTime(history.getProgressTime())
-                .completed(history.getCompleted())
+                .id(entity.getId())
+                .userId(entity.getUser().getId())
+                .videoId(entity.getVideoId())
+                .watchedAt(entity.getWatchedAt())
+                .progressTime(entity.getProgressTime())
+                .completed(entity.getCompleted())
+                .videoDetails(null)
                 .build();
-    }
-
-    public WatchHistoryResponse toResponseWithVideo(WatchHistory history, Object videoDetails) {
-        WatchHistoryResponse response = toResponse(history);
-        response.setVideoDetails(videoDetails);
-        return response;
     }
 }

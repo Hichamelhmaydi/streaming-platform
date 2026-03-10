@@ -7,18 +7,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class WatchlistMapper {
 
-    public WatchlistResponse toResponse(Watchlist watchlist) {
+    public WatchlistResponse toResponse(Watchlist entity) {
         return WatchlistResponse.builder()
-                .id(watchlist.getId())
-                .userId(watchlist.getUser().getId())
-                .videoId(watchlist.getVideoId())
-                .addedAt(watchlist.getAddedAt())
+                .id(entity.getId())
+                .userId(entity.getUser().getId())
+                .videoId(entity.getVideoId())
+                .addedAt(entity.getAddedAt())
+                .videoDetails(null)
                 .build();
-    }
-
-    public WatchlistResponse toResponseWithVideo(Watchlist watchlist, Object videoDetails) {
-        WatchlistResponse response = toResponse(watchlist);
-        response.setVideoDetails(videoDetails);
-        return response;
     }
 }

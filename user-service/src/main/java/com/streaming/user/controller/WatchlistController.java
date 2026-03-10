@@ -18,27 +18,31 @@ public class WatchlistController {
     private final WatchlistService watchlistService;
 
     @PostMapping("/users/{userId}/videos/{videoId}")
-    public ResponseEntity<WatchlistResponse> addToWatchlist(@PathVariable Long userId,
-                                                            @PathVariable Long videoId) {
+    public ResponseEntity<WatchlistResponse> addToWatchlist(
+            @PathVariable("userId") Long userId,
+            @PathVariable("videoId") Long videoId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(watchlistService.addToWatchlist(userId, videoId));
     }
 
     @DeleteMapping("/users/{userId}/videos/{videoId}")
-    public ResponseEntity<Void> removeFromWatchlist(@PathVariable Long userId,
-                                                    @PathVariable Long videoId) {
+    public ResponseEntity<Void> removeFromWatchlist(
+            @PathVariable("userId") Long userId,
+            @PathVariable("videoId") Long videoId) {
         watchlistService.removeFromWatchlist(userId, videoId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<WatchlistResponse>> getWatchlist(@PathVariable Long userId) {
+    public ResponseEntity<List<WatchlistResponse>> getWatchlist(
+            @PathVariable("userId") Long userId) {
         return ResponseEntity.ok(watchlistService.getWatchlist(userId));
     }
 
     @GetMapping("/users/{userId}/videos/{videoId}/check")
-    public ResponseEntity<Map<String, Boolean>> checkInWatchlist(@PathVariable Long userId,
-                                                                 @PathVariable Long videoId) {
+    public ResponseEntity<Map<String, Boolean>> checkWatchlist(
+            @PathVariable("userId") Long userId,
+            @PathVariable("videoId") Long videoId) {
         boolean inWatchlist = watchlistService.isInWatchlist(userId, videoId);
         return ResponseEntity.ok(Map.of("inWatchlist", inWatchlist));
     }

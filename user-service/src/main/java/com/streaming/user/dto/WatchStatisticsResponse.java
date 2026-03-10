@@ -9,6 +9,6 @@ public class WatchStatisticsResponse {
     private Long totalVideosWatched;
     private Long completedVideos;
     private Long inProgressVideos;
-    private Integer totalWatchTimeSeconds;
+    private Long totalWatchTimeSeconds;
     private Map<String, Long> watchCountByStatus;
 }

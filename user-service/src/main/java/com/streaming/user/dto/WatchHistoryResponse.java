@@ -3,7 +3,7 @@ package com.streaming.user.dto;
 import lombok.*;
 import java.time.LocalDateTime;
 
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class WatchHistoryResponse {
     private Long id;
     private Long userId;
@@ -12,4 +12,5 @@ public class WatchHistoryResponse {
     private Integer progressTime;
     private Boolean completed;
     private Object videoDetails;
+
 }

@@ -15,7 +15,7 @@ public class Video {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 2000)
     private String description;
 
     private String thumbnailUrl;
@@ -34,7 +34,7 @@ public class Video {
     private Double rating;
     private String director;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "cast_list", length = 1000)
     private String cast;
 
     public enum VideoType { FILM, SERIE }

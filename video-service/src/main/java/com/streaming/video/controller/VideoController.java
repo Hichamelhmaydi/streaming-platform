@@ -26,7 +26,7 @@ public class VideoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VideoResponse> getVideoById(@PathVariable Long id) {
+    public ResponseEntity<VideoResponse> getVideoById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(videoService.getVideoById(id));
     }
 
@@ -36,24 +36,26 @@ public class VideoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VideoResponse> updateVideo(@PathVariable Long id,
-                                                     @Valid @RequestBody VideoRequest request) {
+    public ResponseEntity<VideoResponse> updateVideo(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody VideoRequest request) {
         return ResponseEntity.ok(videoService.updateVideo(id, request));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteVideo(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteVideo(@PathVariable("id") Long id) {
         videoService.deleteVideo(id);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/type/{type}")
-    public ResponseEntity<List<VideoResponse>> getByType(@PathVariable VideoType type) {
+    public ResponseEntity<List<VideoResponse>> getByType(@PathVariable("type") VideoType type) {
         return ResponseEntity.ok(videoService.getVideosByType(type));
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<VideoResponse>> getByCategory(@PathVariable VideoCategory category) {
+    public ResponseEntity<List<VideoResponse>> getByCategory(
+            @PathVariable("category") VideoCategory category) {
         return ResponseEntity.ok(videoService.getVideosByCategory(category));
     }
 

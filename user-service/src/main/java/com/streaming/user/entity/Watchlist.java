@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "watchlist", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "video_id"})
+    @UniqueConstraint(columnNames = {"user_id", "video_id"})
 })
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Watchlist {

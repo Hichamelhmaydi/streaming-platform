@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: file://${user.home}/streaming-config-repo
+          uri: file:///C:/Users/youco/Desktop/streaming-platform/config-repo
           default-label: main
 management:
   endpoints:
